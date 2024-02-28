@@ -1,12 +1,17 @@
-import React, {FC} from 'react';
+import {FC} from 'react';
+import {Layout} from "antd";
+import Navbar from "./components/Navbar";
 import AppRouter from "./components/AppRouter";
 import './App.css';
 
 const App:FC = () => {
   return (
-    <div>
+    <Layout>
+      <Navbar />
+      <Layout.Content>
         <AppRouter />
-    </div>
+      </Layout.Content>
+    </Layout>
   );
 }
 
