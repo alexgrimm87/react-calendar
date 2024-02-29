@@ -1,9 +1,46 @@
-import {FC} from 'react';
+import {FC, useEffect, useState} from 'react';
+import {Button, Layout, Modal, Row} from "antd";
+import EventCalendar from "../components/EventCalendar";
+import EventForm from "../components/EventForm";
+import {useActions} from "../hooks/useActions";
+import {useTypedSelector} from "../hooks/useTypedSelector";
+import {IEvent} from "../models/IEvent";
 
 const Event:FC = () => {
-    return (
-        <div>Event Page</div>
-    );
+  const [modalVisible, setModalVisible] = useState(false);
+  const {fetchGuests, createEvent, fetchEvents} = useActions();
+  const {guests, events} = useTypedSelector(state => state.event);
+  const {user} = useTypedSelector(state => state.auth);
+
+  useEffect(() => {
+    fetchGuests();
+    fetchEvents(user.username);
+  }, []);
+
+  const addNewEvent = (event: IEvent) => {
+    setModalVisible(false);
+    createEvent(event);
+  }
+
+  return (
+    <Layout>
+      <EventCalendar events={events} />
+      <Row justify="center">
+        <Button onClick={() => setModalVisible(true)}>Add an event</Button>
+      </Row>
+      <Modal
+        title="Add an event"
+        open={modalVisible}
+        footer={null}
+        onCancel={() => setModalVisible(false)}
+      >
+        <EventForm
+          guests={guests}
+          submit={addNewEvent}
+        />
+      </Modal>
+    </Layout>
+  );
 };
 
 export default Event;
